@@ -257,7 +257,7 @@ function scene:create(event)
         target:addEventListener("touch", onTouch)
     end
 
-    enableZoom(box1) -- Habilita zoom na primeira caixa
+    enableZoom(boxN) -- Habilita zoom na primeira caixa
     enableZoom(box2) -- Habilita zoom na segunda caixa 
 end
 
