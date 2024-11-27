@@ -14,11 +14,15 @@ function scene:create(event)
     background.width = display.contentWidth
     background.height = display.contentHeight
 
-    local group1 = display.newGroup()
-    sceneGroup:insert(group1)
+   local boxN = display.newRoundedRect(sceneGroup, display.contentCenterX - 130, display.contentCenterY - 30, 250, 250, 20)
+   boxN:setFillColor(0, 0, 0, 0.2) -- Fundo transparente
+   boxN.strokeWidth = 2
+   boxN:setStrokeColor(1, 0, 0, 0.8) -- Contorno vermelho
 
-    local group2 = display.newGroup()
-    sceneGroup:insert(group2)
+   local box2 = display.newRoundedRect(sceneGroup, display.contentCenterX + 150, display.contentCenterY + 260, 250, 250, 20)
+   box2:setFillColor(0, 0, 0, 0.2) -- Fundo transparente
+   box2.strokeWidth = 2
+   box2:setStrokeColor(1, 0, 0, 0.8) -- Contorno vermelho
 
 
     -- Adicionando o áudio
@@ -165,14 +169,11 @@ function scene:create(event)
     cont3:toFront()
 
     -- foto para zoom
-    local aneuploidia1 = display.newImage(group1, "assets/down-zoom.png")
+    local aneuploidia1 = display.newImage(sceneGroup, "assets/down-zoom.png")
     aneuploidia1.width = 250
     aneuploidia1.height = 250
-    aneuploidia1.x = 0
-    aneuploidia1.y = 0
-
-    group1.x = display.contentCenterX - 130
-    group1.y = display.contentCenterY - 30
+    aneuploidia1.x = boxN.x
+    aneuploidia1.y = boxN.y
 
     local cont4 = display.newText({
         parent = sceneGroup,
@@ -203,14 +204,11 @@ function scene:create(event)
     cont5:setStrokeColor(1, 0, 0) -- Sombra vermelha
     cont5:toFront()
 
-    local aneuploidia2 = display.newImage(group2, "assets/turner-zoom.png")
+    local aneuploidia2 = display.newImage(sceneGroup, "assets/turner-zoom.png")
     aneuploidia2.width = 250
     aneuploidia2.height = 250
-    aneuploidia2.x = 0
-    aneuploidia2.y = 0
-
-    group2.x = display.contentCenterX + 150
-    group2.y = display.contentCenterY + 260
+    aneuploidia2.x = box2.x
+    aneuploidia2.y = box2.y
 
     -- Botão de passar página
     local nextButton = display.newImage(sceneGroup, "assets/icon-proximo.png")
@@ -226,73 +224,41 @@ function scene:create(event)
     end
     nextButton:addEventListener("tap", nextPage)
 
-    -- Calcula a distância entre dois pontos
-    local function calculateDistance(x1, y1, x2, y2)
-        local dx = x2 - x1
-        local dy = y2 - y1
-        return math.sqrt(dx * dx + dy * dy)
-    end
-
-    local function enableZoom(group)
+    local function enableZoom(target)
         local finger1, finger2
         local initialDistance
-        local isZooming = false
         local originalScaleX, originalScaleY
-
-        -- Define os limites de zoom
         local minScale, maxScale = 0.5, 2.0
 
-        local function onGroupTouch(event)
-            local phase = event.phase
-
-            if phase == "began" then
+        local function onTouch(event)
+            if event.phase == "began" then
                 if not finger1 then
                     finger1 = event
                 elseif not finger2 then
                     finger2 = event
-                    isZooming = true
-                    initialDistance = calculateDistance(finger1.x, finger1.y, finger2.x, finger2.y)
-                    originalScaleX, originalScaleY = group.xScale, group.yScale
+                    initialDistance = math.sqrt((finger1.x - finger2.x)^2 + (finger1.y - finger2.y)^2)
+                    originalScaleX, originalScaleY = target.xScale, target.yScale
                 end
-            elseif phase == "moved" and isZooming then
-                if event.id == finger1.id then
-                    finger1 = event
-                elseif event.id == finger2.id then
-                    finger2 = event
-                end
-
-                if finger1 and finger2 then
-                    local currentDistance = calculateDistance(finger1.x, finger1.y, finger2.x, finger2.y)
-                    local scale = currentDistance / initialDistance
-
-                    -- Calcula o novo tamanho com limites
-                    local newScaleX = math.max(minScale, math.min(maxScale, originalScaleX * scale))
-                    local newScaleY = math.max(minScale, math.min(maxScale, originalScaleY * scale))
-
-                    group.xScale = newScaleX
-                    group.yScale = newScaleY
-                end
-            elseif phase == "ended" or phase == "cancelled" then
-                if event.id == finger1.id then
+            elseif event.phase == "moved" and finger1 and finger2 then
+                local currentDistance = math.sqrt((finger1.x - finger2.x)^2 + (finger1.y - finger2.y)^2)
+                local scale = currentDistance / initialDistance
+                target.xScale = math.max(minScale, math.min(maxScale, originalScaleX * scale))
+                target.yScale = math.max(minScale, math.min(maxScale, originalScaleY * scale))
+            elseif event.phase == "ended" or event.phase == "cancelled" then
+                if event.id == (finger1 and finger1.id) then
                     finger1 = nil
-                elseif event.id == finger2.id then
+                elseif event.id == (finger2 and finger2.id) then
                     finger2 = nil
                 end
-
-                if not finger1 or not finger2 then
-                    isZooming = false
-                end
             end
-
             return true
         end
 
-        group:addEventListener("touch", onGroupTouch)
+        target:addEventListener("touch", onTouch)
     end
 
-
-    enableZoom(group1) -- Habilita zoom na primeira imagem
-    enableZoom(group2) -- Habilita zoom na segunda imagem
+    enableZoom(box1) -- Habilita zoom na primeira caixa
+    enableZoom(box2) -- Habilita zoom na segunda caixa 
 end
 
 -- Adiciona o listener para o evento "create" da cena
