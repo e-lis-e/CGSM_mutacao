@@ -65,8 +65,8 @@ function scene:create(event)
 
     -- Botão de voltar
     local backButton = display.newImage(sceneGroup, "assets/icon-voltar.png")
-    backButton.width = 60
-    backButton.height = 60
+    backButton.width = 80
+    backButton.height = 80
     backButton.x = backButton.width / 2 + 10
     backButton.y = backButton.height / 2 + 10
 
@@ -212,8 +212,8 @@ function scene:create(event)
 
     -- Botão de passar página
     local nextButton = display.newImage(sceneGroup, "assets/icon-proximo.png")
-    nextButton.width = 60
-    nextButton.height = 60
+    nextButton.width = 80
+    nextButton.height = 80
     nextButton.x = display.contentWidth - nextButton.width / 2 - 10
     nextButton.y = display.contentHeight - nextButton.height / 2 - 10
 
