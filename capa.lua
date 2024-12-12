@@ -12,6 +12,44 @@ function scene:create(event)
     background.width = display.contentWidth
     background.height = display.contentHeight
 
+    -- Adicionando o áudio
+    local audioFile = audio.loadStream("audios/capa.mp3")
+        local audioChannel
+    
+        local function playAudio()
+            audioChannel = audio.play(audioFile, { loops = -1 })
+        end
+    
+        local function stopAudio()
+            if audioChannel then
+                audio.stop(audioChannel)
+                audioChannel = nil
+            end
+        end
+    
+        -- Botão de som
+        local isAudioPlaying = true
+        local soundButton = display.newImage(sceneGroup, "assets/sound-on.png") 
+        soundButton.width = 50
+        soundButton.height = 50
+        soundButton.x = display.contentWidth - soundButton.width - 20
+        soundButton.y = soundButton.height + 20
+    
+        local function toggleAudio()
+            if isAudioPlaying then
+                stopAudio()
+                soundButton.fill = { type = "image", filename = "assets/sound-off.png" } 
+            else
+                playAudio()
+                soundButton.fill = { type = "image", filename = "assets/sound-on.png" } 
+            end
+            isAudioPlaying = not isAudioPlaying
+        end
+        soundButton:addEventListener("tap", toggleAudio)
+    
+        -- Reproduz o áudio automaticamente ao entrar na página
+        playAudio()
+
     -- Título
     local titulo = display.newImage(sceneGroup,"assets/titulo-mutacoes.png")
     titulo.width = 480
@@ -22,7 +60,7 @@ function scene:create(event)
     -- Nome
     local titulo = display.newText({
         parent = sceneGroup,
-        text = "Autor: Elise Novaes",
+        text = "Autor: Elise Parente",
         x = display.contentWidth - 100,
         y = display.contentCenterY + 100,
         font = "MavenPro-VariableFont_wght.ttf",
@@ -49,13 +87,14 @@ function scene:create(event)
 
     -- Botão de passar página
     local nextButton = display.newImage(sceneGroup, "assets/icon-proximo.png")
-    nextButton.width = 60
-    nextButton.height = 60
+    nextButton.width = 80
+    nextButton.height = 80
     nextButton.x = display.contentWidth - nextButton.width / 2 - 10
     nextButton.y = display.contentHeight - nextButton.height / 2 - 10
 
     -- Função para passar página
     local function nextPage()
+        stopAudio()
         composer.gotoScene("pages.pageone", {effect = "slideLeft", time = 500})
     end
     nextButton:addEventListener("tap", nextPage)

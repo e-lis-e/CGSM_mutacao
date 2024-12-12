@@ -12,6 +12,44 @@ function scene:create(event)
     background.width = display.contentWidth
     background.height = display.contentHeight
 
+    -- Adicionando o áudio
+    local audioFile = audio.loadStream("audios/capa.mp3")
+        local audioChannel
+    
+        local function playAudio()
+            audioChannel = audio.play(audioFile, { loops = -1 })
+        end
+    
+        local function stopAudio()
+            if audioChannel then
+                audio.stop(audioChannel)
+                audioChannel = nil
+            end
+        end
+    
+        -- Botão de som
+        local isAudioPlaying = true
+        local soundButton = display.newImage(sceneGroup, "assets/sound-on.png") 
+        soundButton.width = 50
+        soundButton.height = 50
+        soundButton.x = display.contentWidth - soundButton.width - 20
+        soundButton.y = soundButton.height + 20
+    
+        local function toggleAudio()
+            if isAudioPlaying then
+                stopAudio()
+                soundButton.fill = { type = "image", filename = "assets/sound-off.png" } 
+            else
+                playAudio()
+                soundButton.fill = { type = "image", filename = "assets/sound-on.png" } 
+            end
+            isAudioPlaying = not isAudioPlaying
+        end
+        soundButton:addEventListener("tap", toggleAudio)
+    
+        -- Reproduz o áudio automaticamente ao entrar na página
+        playAudio()
+
     -- Botão de voltar
     local backButton = display.newImage(sceneGroup, "assets/icon-voltar.png")
     backButton.width = 60
@@ -21,6 +59,7 @@ function scene:create(event)
 
     -- Função para passar página
     local function backPage()
+        stopAudio()
         composer.gotoScene("pages.pagefive", { effect = "slideRight", time = 500 })
     end
     backButton:addEventListener("tap", backPage)
@@ -35,7 +74,7 @@ function scene:create(event)
     -- Nome
     local titulo = display.newText({
         parent = sceneGroup,
-        text = "Autor: Elise Novaes",
+        text = "Autor: Elise Parente",
         x = display.contentWidth - 130,
         y = display.contentCenterY + 100,
         width = 250,
