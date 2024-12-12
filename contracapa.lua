@@ -52,8 +52,8 @@ function scene:create(event)
 
     -- Botão de voltar
     local backButton = display.newImage(sceneGroup, "assets/icon-voltar.png")
-    backButton.width = 60
-    backButton.height = 60
+    backButton.width = 80
+    backButton.height = 80
     backButton.x = backButton.width / 2 + 10
     backButton.y = backButton.height / 2 + 10
 
@@ -63,6 +63,20 @@ function scene:create(event)
         composer.gotoScene("pages.pagefive", { effect = "slideRight", time = 500 })
     end
     backButton:addEventListener("tap", backPage)
+
+    -- Botão de voltar
+    local initButton = display.newImage(sceneGroup, "assets/icon-inicio.png")
+    initButton.width = 80
+    initButton.height = 80
+    initButton.x = initButton.width / 2  + 10
+    initButton.y = initButton.height / 2 + 880
+
+    -- Função para passar página
+    local function initPage()
+        stopAudio()
+        composer.gotoScene("capa", { effect = "slideRight", time = 500 })
+    end
+    initButton:addEventListener("tap", initPage)
 
     -- Título
     local titulo = display.newImage(sceneGroup, "assets/titulo-mutacoes.png")
