@@ -1,4 +1,7 @@
 local composer = require("composer")
+local physics = require("physics")
+physics.start()
+physics.setGravity(0, 0)
 local scene = composer.newScene()
 
 -- Função de criação da cena
@@ -14,41 +17,41 @@ function scene:create(event)
 
     -- Adicionando o áudio
     local audioFile = audio.loadStream("audios/pagetwo.mp3")
-        local audioChannel
-    
-        local function playAudio()
-            audioChannel = audio.play(audioFile, { loops = -1 })
+    local audioChannel
+
+    local function playAudio()
+        audioChannel = audio.play(audioFile, { loops = -1 })
+    end
+
+    local function stopAudio()
+        if audioChannel then
+            audio.stop(audioChannel)
+            audioChannel = nil
         end
-    
-        local function stopAudio()
-            if audioChannel then
-                audio.stop(audioChannel)
-                audioChannel = nil
-            end
+    end
+
+    -- Botão de som
+    local isAudioPlaying = true
+    local soundButton = display.newImage(sceneGroup, "assets/sound-on.png")
+    soundButton.width = 50
+    soundButton.height = 50
+    soundButton.x = display.contentWidth - soundButton.width - 20
+    soundButton.y = soundButton.height + 20
+
+    local function toggleAudio()
+        if isAudioPlaying then
+            stopAudio()
+            soundButton.fill = { type = "image", filename = "assets/sound-off.png" }
+        else
+            playAudio()
+            soundButton.fill = { type = "image", filename = "assets/sound-on.png" }
         end
-    
-        -- Botão de som
-        local isAudioPlaying = true
-        local soundButton = display.newImage(sceneGroup, "assets/sound-on.png") 
-        soundButton.width = 50
-        soundButton.height = 50
-        soundButton.x = display.contentWidth - soundButton.width - 20
-        soundButton.y = soundButton.height + 20
-    
-        local function toggleAudio()
-            if isAudioPlaying then
-                stopAudio()
-                soundButton.fill = { type = "image", filename = "assets/sound-off.png" } 
-            else
-                playAudio()
-                soundButton.fill = { type = "image", filename = "assets/sound-on.png" } 
-            end
-            isAudioPlaying = not isAudioPlaying
-        end
-        soundButton:addEventListener("tap", toggleAudio)
-    
-        -- Reproduz o áudio automaticamente ao entrar na página
-        playAudio()
+        isAudioPlaying = not isAudioPlaying
+    end
+    soundButton:addEventListener("tap", toggleAudio)
+
+    -- Reproduz o áudio automaticamente ao entrar na página
+    playAudio()
 
     -- Botão de voltar
     local backButton = display.newImage(sceneGroup, "assets/icon-voltar.png")
@@ -171,7 +174,8 @@ function scene:create(event)
 
     local cont4 = display.newText({
         parent = sceneGroup,
-        text = "Isso acontece nos zangões,pois eles se desenvolvem por partenogênese (possuem apenas um conjunto cromossômico).",
+        text =
+        "Isso acontece nos zangões,pois eles se desenvolvem por partenogênese (possuem apenas um conjunto cromossômico).",
         x = box1.x - 130,
         y = box1.y + 90,
         width = 250,
@@ -183,15 +187,66 @@ function scene:create(event)
     cont4:setStrokeColor(1, 0, 0) -- Sombra vermelha
     cont4:toFront()
 
-    local bee = display.newImage(sceneGroup, "assets/bee.png")
-    bee.width = 280
-    bee.height = 160
-    bee.x = display.contentCenterX + 140
-    bee.y = display.contentCenterY + 100
+    local cont4b = display.newText({
+        parent = sceneGroup,
+        text = "Balance o celular para a abelha se multiplicar",
+        x = box1.x + 140,
+        y = box1.y + 110,
+        width = 250,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 16
+    })
+    cont4b:setFillColor(1, 1, 0)   -- Cor branca
+    cont4b.strokeWidth = 2
+    cont4b:setStrokeColor(1, 0, 0) -- Sombra vermelha
+    cont4b:toFront()
+
+
+    -- Caixa de limite para as abelhas
+    local limitBox = display.newRect(sceneGroup, display.contentCenterX + 130, display.contentCenterY + 100, 250, 180, 25)
+    limitBox:setFillColor(0, 0, 0, 0)
+    limitBox.strokeWidth = 2
+    limitBox:setStrokeColor(1, 0, 0)
+
+    -- Função para criar uma nova abelha
+    local function createBee(x, y)
+        x = x or limitBox.x -- Posição central da caixa
+        y = y or limitBox.y -- Posição central da caixa
+        local bee = display.newImage(sceneGroup, "assets/bee.png")
+        bee.width = 50
+        bee.height = 50
+        bee.x = x 
+        bee.y = y + 10
+        physics.addBody(bee, "dynamic", { radius = 25, bounce = 0.8})
+        bee.isBee = true
+    end
+
+    -- Cria a abelha inicial
+    createBee()
+
+    -- Detecta colisões e multiplica abelhas ao toque
+    local function onCollision(event)
+        if event.phase == "began" and event.object1.isBee and event.object2.isBee then
+            createBee(event.object1.x, event.object1.y)
+        end
+    end
+    Runtime:addEventListener("collision", onCollision)
+
+    -- Detecta movimento do dispositivo e multiplica as abelhas
+    local function onShake(event)
+        if event.isShake then
+            for i = 1, 5 do
+                createBee(math.random(limitBox.x - limitBox.width / 2, limitBox.x + limitBox.width / 2),
+                          math.random(limitBox.y - limitBox.height / 2, limitBox.y + limitBox.height / 2))
+            end
+        end
+    end
+    Runtime:addEventListener("accelerometer", onShake)
 
     local cont5 = display.newText({
         parent = sceneGroup,
-        text = "Na euploidia, o número de genomas é alterado e um conjunto diploide pode, nesse caso, originar um organismo haploide ou poliploide (conjunto cromossômico acima do nível diploide).",
+        text =
+        "Na euploidia, o número de genomas é alterado e um conjunto diploide pode, nesse caso, originar um organismo haploide ou poliploide (conjunto cromossômico acima do nível diploide).",
         x = box1.x,
         y = box1.y + 180,
         width = 550,
