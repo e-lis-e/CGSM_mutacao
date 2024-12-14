@@ -130,14 +130,14 @@ function scene:create(event)
     fitaDNA.height = 300
     fitaDNA.rotation = 130
     fitaDNA.x = display.contentCenterX
-    fitaDNA.y = display.contentCenterY + 15
+    fitaDNA.y = display.contentCenterY + 5
 
     -- guia de interação
     local guide = display.newText({
         parent = sceneGroup,
-        text = "toque na fita genética para aplicar raios ultravioleta.",
+        text = "toque na fita genética repetidamente para aplicar raios ultravioleta.",
         x = box1.x,
-        y = box1.y + 50,
+        y = box1.y + 35,
         width = 400,
         font = "MavenPro-VariableFont_wght.ttf",
         fontSize = 14,
