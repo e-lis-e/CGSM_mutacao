@@ -14,41 +14,52 @@ function scene:create(event)
 
     -- Adicionando o áudio
     local audioFile = audio.loadStream("audios/pagefour.mp3")
-        local audioChannel
-    
-        local function playAudio()
-            audioChannel = audio.play(audioFile, { loops = -1 })
+    local audioChannel
+
+    local function playAudio()
+        audioChannel = audio.play(audioFile, { loops = -1 })
+    end
+
+    local function stopAudio()
+        if audioChannel then
+            audio.stop(audioChannel)
+            audioChannel = nil
         end
-    
-        local function stopAudio()
-            if audioChannel then
-                audio.stop(audioChannel)
-                audioChannel = nil
-            end
+    end
+
+    -- Botão de som
+    local isAudioPlaying = true
+    local soundButton = display.newImage(sceneGroup, "assets/sound-on.png")
+    soundButton.width = 50
+    soundButton.height = 50
+    soundButton.x = display.contentWidth - soundButton.width - 20
+    soundButton.y = soundButton.height + 20
+
+    -- Texto "Áudio"
+    local audioText = display.newText({
+        parent = sceneGroup,
+        text = "Áudio",
+        x = soundButton.x,
+        y = soundButton.y + soundButton.height / 2 + 10,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 18
+    })
+    audioText:setFillColor(1, 1, 1) -- Cor branca
+
+    local function toggleAudio()
+        if isAudioPlaying then
+            stopAudio()
+            soundButton.fill = { type = "image", filename = "assets/sound-off.png" }
+        else
+            playAudio()
+            soundButton.fill = { type = "image", filename = "assets/sound-on.png" }
         end
-    
-        -- Botão de som
-        local isAudioPlaying = true
-        local soundButton = display.newImage(sceneGroup, "assets/sound-on.png") 
-        soundButton.width = 50
-        soundButton.height = 50
-        soundButton.x = display.contentWidth - soundButton.width - 20
-        soundButton.y = soundButton.height + 20
-    
-        local function toggleAudio()
-            if isAudioPlaying then
-                stopAudio()
-                soundButton.fill = { type = "image", filename = "assets/sound-off.png" } 
-            else
-                playAudio()
-                soundButton.fill = { type = "image", filename = "assets/sound-on.png" } 
-            end
-            isAudioPlaying = not isAudioPlaying
-        end
-        soundButton:addEventListener("tap", toggleAudio)
-    
-        -- Reproduz o áudio automaticamente ao entrar na página
-        playAudio()
+        isAudioPlaying = not isAudioPlaying
+    end
+    soundButton:addEventListener("tap", toggleAudio)
+
+    -- Reproduz o áudio automaticamente ao entrar na página
+    playAudio()
 
     -- Botão de voltar
     local backButton = display.newImage(sceneGroup, "assets/icon-voltar.png")
@@ -139,12 +150,13 @@ function scene:create(event)
 
     local cont4 = display.newText({
         parent = sceneGroup,
-        text = "Inversão é uma alteração onde uma parte do cromossomo se separa e se une, porém de forma invertida. Nesse caso, nada se perde, mas altera a ordem dos genes.",
-            x = box1.x,
-            y = box1.y + 30,
-            width = 500,
-            font = "MavenPro-VariableFont_wght.ttf",
-            fontSize = 16
+        text =
+        "Inversão é uma alteração onde uma parte do cromossomo se separa e se une, porém de forma invertida. Nesse caso, nada se perde, mas altera a ordem dos genes.",
+        x = box1.x,
+        y = box1.y + 30,
+        width = 500,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 16
     })
     cont4:setFillColor(1, 1, 1)   -- Cor branca
     cont4.strokeWidth = 2
@@ -153,12 +165,13 @@ function scene:create(event)
 
     local cont5 = display.newText({
         parent = sceneGroup,
-        text = "existem dois tipos de inversão: a pericêntrica, onde a região invertida envolve o centrômero, e a paracêntrica, onde o centrômero não é envolvido.",
+        text =
+        "existem dois tipos de inversão: a pericêntrica, onde a região invertida envolve o centrômero, e a paracêntrica, onde o centrômero não é envolvido.",
         x = box1.x,
-            y = box1.y + 100,
-            width = 500,
-            font = "MavenPro-VariableFont_wght.ttf",
-            fontSize = 16
+        y = box1.y + 100,
+        width = 500,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 16
     })
     cont5:setFillColor(1, 1, 1)   -- Cor amarela
     cont5.strokeWidth = 2

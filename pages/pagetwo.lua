@@ -38,6 +38,17 @@ function scene:create(event)
     soundButton.x = display.contentWidth - soundButton.width - 20
     soundButton.y = soundButton.height + 20
 
+    -- Texto "Áudio"
+    local audioText = display.newText({
+        parent = sceneGroup,
+        text = "Áudio",
+        x = soundButton.x,
+        y = soundButton.y + soundButton.height / 2 + 10,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 18
+    })
+    audioText:setFillColor(1, 1, 1) -- Cor branca
+
     local function toggleAudio()
         if isAudioPlaying then
             stopAudio()

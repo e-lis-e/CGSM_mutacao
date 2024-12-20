@@ -14,41 +14,52 @@ function scene:create(event)
 
     -- Adicionando o áudio
     local audioFile = audio.loadStream("audios/capa.mp3")
-        local audioChannel
-    
-        local function playAudio()
-            audioChannel = audio.play(audioFile, { loops = -1 })
+    local audioChannel
+
+    local function playAudio()
+        audioChannel = audio.play(audioFile, { loops = -1 })
+    end
+
+    local function stopAudio()
+        if audioChannel then
+            audio.stop(audioChannel)
+            audioChannel = nil
         end
-    
-        local function stopAudio()
-            if audioChannel then
-                audio.stop(audioChannel)
-                audioChannel = nil
-            end
+    end
+
+    -- Botão de som
+    local isAudioPlaying = true
+    local soundButton = display.newImage(sceneGroup, "assets/sound-on.png")
+    soundButton.width = 50
+    soundButton.height = 50
+    soundButton.x = display.contentWidth - soundButton.width - 20
+    soundButton.y = soundButton.height + 20
+
+    -- Texto "Áudio"
+    local audioText = display.newText({
+        parent = sceneGroup,
+        text = "Áudio",
+        x = soundButton.x,
+        y = soundButton.y + soundButton.height / 2 + 10,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 18
+    })
+    audioText:setFillColor(1, 1, 1) -- Cor branca
+
+    local function toggleAudio()
+        if isAudioPlaying then
+            stopAudio()
+            soundButton.fill = { type = "image", filename = "assets/sound-off.png" }
+        else
+            playAudio()
+            soundButton.fill = { type = "image", filename = "assets/sound-on.png" }
         end
-    
-        -- Botão de som
-        local isAudioPlaying = true
-        local soundButton = display.newImage(sceneGroup, "assets/sound-on.png") 
-        soundButton.width = 50
-        soundButton.height = 50
-        soundButton.x = display.contentWidth - soundButton.width - 20
-        soundButton.y = soundButton.height + 20
-    
-        local function toggleAudio()
-            if isAudioPlaying then
-                stopAudio()
-                soundButton.fill = { type = "image", filename = "assets/sound-off.png" } 
-            else
-                playAudio()
-                soundButton.fill = { type = "image", filename = "assets/sound-on.png" } 
-            end
-            isAudioPlaying = not isAudioPlaying
-        end
-        soundButton:addEventListener("tap", toggleAudio)
-    
-        -- Reproduz o áudio automaticamente ao entrar na página
-        playAudio()
+        isAudioPlaying = not isAudioPlaying
+    end
+    soundButton:addEventListener("tap", toggleAudio)
+
+    -- Reproduz o áudio automaticamente ao entrar na página
+    playAudio()
 
     -- Botão de voltar
     local backButton = display.newImage(sceneGroup, "assets/icon-voltar.png")
@@ -68,7 +79,7 @@ function scene:create(event)
     local initButton = display.newImage(sceneGroup, "assets/icon-inicio.png")
     initButton.width = 80
     initButton.height = 80
-    initButton.x = initButton.width / 2  + 10
+    initButton.x = initButton.width / 2 + 10
     initButton.y = initButton.height / 2 + 880
 
     -- Função para passar página
@@ -96,7 +107,7 @@ function scene:create(event)
         fontSize = 20,
         align = "right"
     })
-    titulo:setFillColor(1, 1, 0) -- Cor amarela
+    titulo:setFillColor(1, 1, 0)   -- Cor amarela
     titulo.strokeWidth = 2
     titulo:setStrokeColor(1, 0, 0) -- Sombra vermelha
     titulo:toFront()
@@ -112,7 +123,7 @@ function scene:create(event)
         fontSize = 20,
         align = "right"
     })
-    titulo:setFillColor(1, 1, 0) -- Cor amarela
+    titulo:setFillColor(1, 1, 0)   -- Cor amarela
     titulo.strokeWidth = 2
     titulo:setStrokeColor(1, 0, 0) -- Sombra vermelha
     titulo:toFront()
@@ -128,7 +139,7 @@ function scene:create(event)
         fontSize = 20,
         align = "right"
     })
-    titulo:setFillColor(1, 1, 0) -- Cor amarela
+    titulo:setFillColor(1, 1, 0)   -- Cor amarela
     titulo.strokeWidth = 2
     titulo:setStrokeColor(1, 0, 0) -- Sombra vermelha
     titulo:toFront()
@@ -142,11 +153,10 @@ function scene:create(event)
         font = "MavenPro-VariableFont_wght.ttf",
         fontSize = 20
     })
-    titulo:setFillColor(1, 1, 1) -- Cor branca
+    titulo:setFillColor(1, 1, 1)   -- Cor branca
     titulo.strokeWidth = 2
     titulo:setStrokeColor(1, 0, 0) -- Sombra vermelha
     titulo:toFront()
-
 end
 
 -- Adiciona o listener para o evento "create" da cena

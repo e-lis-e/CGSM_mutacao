@@ -14,15 +14,17 @@ function scene:create(event)
     background.width = display.contentWidth
     background.height = display.contentHeight
 
-   local boxN = display.newRoundedRect(sceneGroup, display.contentCenterX - 130, display.contentCenterY - 30, 250, 250, 20)
-   boxN:setFillColor(0, 0, 0, 0.2) -- Fundo transparente
-   boxN.strokeWidth = 2
-   boxN:setStrokeColor(1, 0, 0, 0.8) -- Contorno vermelho
+    local boxN = display.newRoundedRect(sceneGroup, display.contentCenterX - 130, display.contentCenterY - 30, 250, 250,
+        20)
+    boxN:setFillColor(0, 0, 0, 0.2)  -- Fundo transparente
+    boxN.strokeWidth = 2
+    boxN:setStrokeColor(1, 0, 0, 0.8) -- Contorno vermelho
 
-   local box2 = display.newRoundedRect(sceneGroup, display.contentCenterX + 150, display.contentCenterY + 260, 250, 250, 20)
-   box2:setFillColor(0, 0, 0, 0.2) -- Fundo transparente
-   box2.strokeWidth = 2
-   box2:setStrokeColor(1, 0, 0, 0.8) -- Contorno vermelho
+    local box2 = display.newRoundedRect(sceneGroup, display.contentCenterX + 150, display.contentCenterY + 260, 250, 250,
+        20)
+    box2:setFillColor(0, 0, 0, 0.2)  -- Fundo transparente
+    box2.strokeWidth = 2
+    box2:setStrokeColor(1, 0, 0, 0.8) -- Contorno vermelho
 
 
     -- Adicionando o áudio
@@ -47,6 +49,17 @@ function scene:create(event)
     soundButton.height = 50
     soundButton.x = display.contentWidth - soundButton.width - 20
     soundButton.y = soundButton.height + 20
+
+    -- Texto "Áudio"
+    local audioText = display.newText({
+        parent = sceneGroup,
+        text = "Áudio",
+        x = soundButton.x,
+        y = soundButton.y + soundButton.height / 2 + 10,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 18
+    })
+    audioText:setFillColor(1, 1, 1) -- Cor branca
 
     local function toggleAudio()
         if isAudioPlaying then
@@ -236,11 +249,11 @@ function scene:create(event)
                     finger1 = event
                 elseif not finger2 then
                     finger2 = event
-                    initialDistance = math.sqrt((finger1.x - finger2.x)^2 + (finger1.y - finger2.y)^2)
+                    initialDistance = math.sqrt((finger1.x - finger2.x) ^ 2 + (finger1.y - finger2.y) ^ 2)
                     originalScaleX, originalScaleY = target.xScale, target.yScale
                 end
             elseif event.phase == "moved" and finger1 and finger2 then
-                local currentDistance = math.sqrt((finger1.x - finger2.x)^2 + (finger1.y - finger2.y)^2)
+                local currentDistance = math.sqrt((finger1.x - finger2.x) ^ 2 + (finger1.y - finger2.y) ^ 2)
                 local scale = currentDistance / initialDistance
                 target.xScale = math.max(minScale, math.min(maxScale, originalScaleX * scale))
                 target.yScale = math.max(minScale, math.min(maxScale, originalScaleY * scale))
@@ -257,8 +270,8 @@ function scene:create(event)
         target:addEventListener("touch", onTouch)
     end
 
-    enableZoom(aneuploidia1) 
-    enableZoom(aneuploidia2) 
+    enableZoom(aneuploidia1)
+    enableZoom(aneuploidia2)
 end
 
 -- Adiciona o listener para o evento "create" da cena

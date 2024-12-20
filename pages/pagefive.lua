@@ -14,41 +14,52 @@ function scene:create(event)
 
     -- Adicionando o áudio
     local audioFile = audio.loadStream("audios/pagefive.mp3")
-        local audioChannel
-    
-        local function playAudio()
-            audioChannel = audio.play(audioFile, { loops = -1 })
+    local audioChannel
+
+    local function playAudio()
+        audioChannel = audio.play(audioFile, { loops = -1 })
+    end
+
+    local function stopAudio()
+        if audioChannel then
+            audio.stop(audioChannel)
+            audioChannel = nil
         end
-    
-        local function stopAudio()
-            if audioChannel then
-                audio.stop(audioChannel)
-                audioChannel = nil
-            end
+    end
+
+    -- Botão de som
+    local isAudioPlaying = true
+    local soundButton = display.newImage(sceneGroup, "assets/sound-on.png")
+    soundButton.width = 50
+    soundButton.height = 50
+    soundButton.x = display.contentWidth - soundButton.width - 20
+    soundButton.y = soundButton.height + 20
+
+    -- Texto "Áudio"
+    local audioText = display.newText({
+        parent = sceneGroup,
+        text = "Áudio",
+        x = soundButton.x,
+        y = soundButton.y + soundButton.height / 2 + 10,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 18
+    })
+    audioText:setFillColor(1, 1, 1) -- Cor branca
+
+    local function toggleAudio()
+        if isAudioPlaying then
+            stopAudio()
+            soundButton.fill = { type = "image", filename = "assets/sound-off.png" }
+        else
+            playAudio()
+            soundButton.fill = { type = "image", filename = "assets/sound-on.png" }
         end
-    
-        -- Botão de som
-        local isAudioPlaying = true
-        local soundButton = display.newImage(sceneGroup, "assets/sound-on.png") 
-        soundButton.width = 50
-        soundButton.height = 50
-        soundButton.x = display.contentWidth - soundButton.width - 20
-        soundButton.y = soundButton.height + 20
-    
-        local function toggleAudio()
-            if isAudioPlaying then
-                stopAudio()
-                soundButton.fill = { type = "image", filename = "assets/sound-off.png" } 
-            else
-                playAudio()
-                soundButton.fill = { type = "image", filename = "assets/sound-on.png" } 
-            end
-            isAudioPlaying = not isAudioPlaying
-        end
-        soundButton:addEventListener("tap", toggleAudio)
-    
-        -- Reproduz o áudio automaticamente ao entrar na página
-        playAudio()
+        isAudioPlaying = not isAudioPlaying
+    end
+    soundButton:addEventListener("tap", toggleAudio)
+
+    -- Reproduz o áudio automaticamente ao entrar na página
+    playAudio()
 
     -- Botão de voltar
     local backButton = display.newImage(sceneGroup, "assets/icon-voltar.png")
@@ -108,7 +119,7 @@ function scene:create(event)
     guide:setStrokeColor(1, 0, 0)
     guide:toFront()
 
-    local trans1 = display.newImage(sceneGroup,"assets/translocacao1.png")
+    local trans1 = display.newImage(sceneGroup, "assets/translocacao1.png")
     trans1.x = display.contentCenterX - 50
     trans1.y = display.contentCenterY - 110
     trans1.width = 300
@@ -121,15 +132,14 @@ function scene:create(event)
     trans2.height = 180
     trans2.alpha = 0 -- Invisível
 
-     -- Função para arrastar imagem
-     local function onTrans1Touch(event)
+    -- Função para arrastar imagem
+    local function onTrans1Touch(event)
         local phase = event.phase
         if phase == "began" then
             display.getCurrentStage():setFocus(trans1)
             trans1.isFocus = true
             trans1.startX = event.x - trans1.x
             trans1.startY = event.y - trans1.y
-
         elseif phase == "moved" and trans1.isFocus then
             trans1.x = event.x - trans1.startX
             trans1.y = event.y - trans1.startY
@@ -137,11 +147,10 @@ function scene:create(event)
             -- Verifica se trans1 foi movido para a posição alvo
             if trans1.x > display.contentCenterX + 100 then
                 trans2.alpha = 1
-                trans1.alpha = 0 
+                trans1.alpha = 0
                 trans1:removeEventListener("touch", onTrans1Touch)
                 display.getCurrentStage():setFocus(nil) -- Libera o foco após completar
             end
-
         elseif (phase == "ended" or phase == "cancelled") and trans1.isFocus then
             display.getCurrentStage():setFocus(nil)
             trans1.isFocus = false
@@ -184,11 +193,11 @@ function scene:create(event)
         parent = sceneGroup,
         text =
         " * um cromossomo possui o braço muito maior do que o outro;",
-            x = box1.x,
-            y = box1.y + 80,
-            width = 500,
-            font = "MavenPro-VariableFont_wght.ttf",
-            fontSize = 16,
+        x = box1.x,
+        y = box1.y + 80,
+        width = 500,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 16,
     })
     cont3:setFillColor(1, 1, 1)   -- Cor branca
     cont3.strokeWidth = 2
@@ -198,11 +207,11 @@ function scene:create(event)
     local cont4 = display.newText({
         parent = sceneGroup,
         text = "* essa translocação causa a perda do braço curto de um e do braço longo do outro.",
-            x = box1.x,
-            y = box1.y + 110,
-            width = 500,
-            font = "MavenPro-VariableFont_wght.ttf",
-            fontSize = 16,
+        x = box1.x,
+        y = box1.y + 110,
+        width = 500,
+        font = "MavenPro-VariableFont_wght.ttf",
+        fontSize = 16,
     })
     cont4:setFillColor(1, 1, 1)   -- Cor branca
     cont4.strokeWidth = 2
@@ -225,7 +234,7 @@ function scene:create(event)
     guide2:setStrokeColor(1, 0, 0)
     guide2:toFront()
 
-    local trans3 = display.newImage(sceneGroup,"assets/robertsoniana.png")
+    local trans3 = display.newImage(sceneGroup, "assets/robertsoniana.png")
     trans3.x = display.contentCenterX - 50
     trans3.y = display.contentCenterY + 250
     trans3.width = 300
@@ -245,7 +254,6 @@ function scene:create(event)
             trans3.isFocus = true
             trans3.startX = event.x - trans3.x
             trans3.startY = event.y - trans3.y
-
         elseif phase == "moved" and trans3.isFocus then
             trans3.x = event.x - trans3.startX
             trans3.y = event.y - trans3.startY
@@ -253,11 +261,10 @@ function scene:create(event)
             -- Verifica se trans1 foi movido para a posição alvo
             if trans3.x > display.contentCenterX + 100 then
                 trans4.alpha = 1
-                trans3.alpha = 0 
+                trans3.alpha = 0
                 trans3:removeEventListener("touch", onTrans1Touch)
                 display.getCurrentStage():setFocus(nil) -- Libera o foco após completar
             end
-
         elseif (phase == "ended" or phase == "cancelled") and trans3.isFocus then
             display.getCurrentStage():setFocus(nil)
             trans3.isFocus = false
